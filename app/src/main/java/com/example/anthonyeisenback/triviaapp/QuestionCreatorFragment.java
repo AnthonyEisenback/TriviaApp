@@ -57,6 +57,7 @@ public class QuestionCreatorFragment extends Fragment {
     @OnClick(R.id.submit_answer_creator_button)
     protected void saveQuestionsClicked() {
 
+
         String questionTitle = theQuestion.getText().toString();
         String correctAns = correctAnswer.getText().toString();
         String incorrectAnswer = incorrectOne.getText().toString();
@@ -67,16 +68,23 @@ public class QuestionCreatorFragment extends Fragment {
             Toast.makeText(getContext(), "Please fill out all the fields", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            Question question = new Question(questionTitle, correctAns, incorrectAnswer, incorrectAnswerTwo, incorrectAnswerThree);
+
+            String questionName = theQuestion.getText().toString();
+            String correct = correctAnswer.getText().toString();
+            String firstWrong = incorrectOne.getText().toString();
+            String secondWrong = incorrectTwo.getText().toString();
+            String thirdWrong = incorrectThree.getText().toString();
+
+            Question question = new Question(questionName, correct, firstWrong, secondWrong, thirdWrong);
 
             callback.saveQuestion(question);
-
         }
 
     }
 
     public interface Callback {
         void saveQuestion(Question question);
+
 
     }
 

@@ -10,4 +10,10 @@
     <string name="correct">Correct!</string>
     <string name="wrong_answer">Wrong!</string>
     <string name="correct_answer_teller">the correct answer is %1$s !</string>
+    <string name="correct_questions">You got %1$d questions correct!</string>
+    <string name="delete_yes_or_no">Would you like to delete the quiz?</string>
+    <string name="YES">yes</string>
+    <string name="no">no</string>
+    <string name="like_to_delete">Are you sure you would like to delete this quiz?</string>
+    <string name="deleted_toast">Your quiz has been deleted</string>
 </resources>

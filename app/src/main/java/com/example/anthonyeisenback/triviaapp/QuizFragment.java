@@ -128,11 +128,13 @@ public class QuizFragment extends android.support.v4.app.Fragment {
             correctAnswers++;
         } else {
             question.setText(R.string.wrong_answer+ getString(R.string.correct_answer_teller, questiona.getCorrectAnswer()));
+            disableButtons();
         }
 
     }
 
     private void nextButtonClicked() {
+        enableButtons();
 
         if (questionPosition <= questionsList.size()-1) {
             populateQuizContent();
@@ -143,6 +145,20 @@ public class QuizFragment extends android.support.v4.app.Fragment {
 
     }
 
+    private void disableButtons() {
+        questionOneAnswer.setEnabled(false);
+        questionTwoAnswer.setEnabled(false);
+        questionThreeAnswer.setEnabled(false);
+        questionFourAnswer.setEnabled(false);
+    }
+
+    private void enableButtons() {
+        questionOneAnswer.setEnabled(true);
+        questionTwoAnswer.setEnabled(true);
+        questionThreeAnswer.setEnabled(true);
+        questionFourAnswer.setEnabled(true);
+    }
+
 
     public void attachView(QuizCallback quizCallback) {
         this.quizCallback = quizCallback;
@@ -151,6 +167,8 @@ public class QuizFragment extends android.support.v4.app.Fragment {
 
     public interface QuizCallback {
         void quizFinished(int correctAnswers);
+
+
 
     }
 }

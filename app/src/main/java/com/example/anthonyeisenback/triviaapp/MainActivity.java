@@ -1,18 +1,17 @@
 package com.example.anthonyeisenback.triviaapp;
 
+import android.content.DialogInterface;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -34,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
     @OnClick(R.id.add_question_button)
     protected void addQuestionClicked() {
 
-        Fragment fragment = questionCreatorFragment.newInstance();
+        QuestionCreatorFragment fragment = questionCreatorFragment.newInstance();
+        fragment.attachView(this);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -66,6 +66,23 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
         } else {
             //todo alert dialouge to let user see if they want to delete quiz, logic to make it happen, and toast when deletion completes.
 
+            final AlertDialog.Builder delete = new AlertDialog.Builder(this);
+            delete.setTitle(R.string.delete_yes_or_no);
+            delete.setMessage(R.string.like_to_delete);
+            delete.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            delete.setPositiveButton(R.string.YES, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    questionList.clear();
+                    dialog.dismiss();
+                    Toast.makeText(MainActivity.this, R.string.deleted_toast, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -81,5 +98,19 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
     @Override
     public void quizFinished(int correctAnswers) {
         //TODO - alert dialogue to tell user their score
+
+        getSupportFragmentManager().beginTransaction().remove(quizFragment).commit();
+        AlertDialog.Builder correctDialogue = new AlertDialog.Builder(this);
+        correctDialogue.setMessage(getString(R.string.correct_questions, correctAnswers));
+        correctDialogue.setTitle("Thanks for playing");
+        correctDialogue.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = correctDialogue.create();
+        dialog.show();
     }
+
 }

@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by anthonyeisenback on 4/2/18.
  */
 
-public class Question implements Parcelable{
+public class Question implements Parcelable {
     private String question;
     private String correctAnswer;
     private String incorrectAnswerOne;
@@ -63,7 +63,7 @@ public class Question implements Parcelable{
     }
 
     @Override
-    public int describeContents(){
+    public int describeContents() {
         return 0;
     }
 
