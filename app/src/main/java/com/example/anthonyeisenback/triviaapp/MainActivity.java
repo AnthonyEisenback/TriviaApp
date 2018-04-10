@@ -33,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
     @OnClick(R.id.add_question_button)
     protected void addQuestionClicked() {
 
-        QuestionCreatorFragment fragment = questionCreatorFragment.newInstance();
-        fragment.attachView(this);
+        questionCreatorFragment = questionCreatorFragment.newInstance();
+        questionCreatorFragment.attachView(this);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_holder, fragment).commit();
+        transaction.replace(R.id.fragment_holder, questionCreatorFragment).addToBackStack("add_questions").commit();
     }
 
     @OnClick(R.id.take_quiz_button)
@@ -46,11 +46,12 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
         if (questionList.isEmpty()) {
             Toast.makeText(this, "Make a quiz please", Toast.LENGTH_SHORT).show();
         } else {
-            Fragment fragment = quizFragment.newInstance();
+
+            quizFragment = quizFragment.newInstance();
+            quizFragment.attachView(this);
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            transaction.replace(R.id.fragment_holder, fragment).commit();
+            transaction.replace(R.id.fragment_holder, quizFragment).addToBackStack("start_quiz").commit();
 
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(QUESTIONS_LIST, (ArrayList<? extends Parcelable>) questionList);
@@ -64,28 +65,27 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
         if (questionList.isEmpty()) {
             Toast.makeText(this, "There are no quizzes to delete", Toast.LENGTH_SHORT).show();
         } else {
-            //todo alert dialouge to let user see if they want to delete quiz, logic to make it happen, and toast when deletion completes.
+            AlertDialog.Builder bye = new AlertDialog.Builder(this);
+            bye.setMessage("Would you like to delete this quiz?");
+            bye.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-            final AlertDialog.Builder delete = new AlertDialog.Builder(this);
-            delete.setTitle(R.string.delete_yes_or_no);
-            delete.setMessage(R.string.like_to_delete);
-            delete.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            delete.setPositiveButton(R.string.YES, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     questionList.clear();
-                    dialog.dismiss();
-                    Toast.makeText(MainActivity.this, R.string.deleted_toast, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Your questions have been cleared", Toast.LENGTH_SHORT).show();
                 }
             });
+            bye.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            bye.create();
+            bye.show();
+
         }
     }
-
 
     @Override
     public void saveQuestion(Question question) {
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
 
     @Override
     public void quizFinished(int correctAnswers) {
-        //TODO - alert dialogue to tell user their score
 
         getSupportFragmentManager().beginTransaction().remove(quizFragment).commit();
         AlertDialog.Builder correctDialogue = new AlertDialog.Builder(this);
@@ -113,4 +112,38 @@ public class MainActivity extends AppCompatActivity implements QuestionCreatorFr
         dialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder bye = new AlertDialog.Builder(this);
+        bye.setMessage("Would you like to exit?");
+        bye.setNegativeButton("no", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        bye.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        bye.setNeutralButton("Go back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
+            }
+
+
+        });
+        bye.create();
+        bye.show();
+
+
+    }
 }
